@@ -6,3 +6,6 @@ print(teams)
 
 team = Team.query.filter_by(name='ferfe').first()
 print(team)
+
+members = Member.query.all()
+print(members)

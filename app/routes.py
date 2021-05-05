@@ -16,7 +16,14 @@ def register_team():
         if team is not None:
             print('This team already exists')
             return redirect(url_for('register_team'))
-        team = Team(name=form.team_name.data)
+
+        members = []
+        members.append(Member(name=form.team_member_1.data))
+        members.append(Member(name=form.team_member_2.data))
+        members.append(Member(name=form.team_member_3.data))
+        members.append(Member(name=form.team_member_4.data))
+
+        team = Team(name=form.team_name.data, members=members)
         db.session.add(team)
         db.session.commit()
         return redirect(url_for('register_team'))
