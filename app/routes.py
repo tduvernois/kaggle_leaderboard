@@ -1,8 +1,13 @@
 from app import app, db
 from flask import render_template
-from app.forms import TeamForm
+from app.forms import TeamForm, UploadResultForm
 from flask import render_template, flash, redirect, url_for
-from app.models import Team, Member
+from app.models import Team, Member, Prediction
+from werkzeug.utils import secure_filename
+import os
+from flask import request
+
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -28,3 +33,24 @@ def register_team():
         db.session.commit()
         return redirect(url_for('register_team'))
     return render_template('register_team.html', title='Sign In', form=form)
+
+
+@app.route('/prediction', methods=['GET', 'POST'])
+def submit_prediction():
+    form = UploadResultForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+
+            f = form.file.data
+            filename = secure_filename(f.filename)
+            team = form.team_name.data
+            filename_saved = team + '-' + filename
+            f.save(os.path.join(
+                app.config['PREDICTION_RESULT_PATH'], filename_saved
+            ))
+            Prediction(name=filename_saved)
+            db.session.commit()
+            return redirect(url_for('index'))
+
+    return render_template('submit_predictions.html', title='Submit predictions',
+                           form=form)
