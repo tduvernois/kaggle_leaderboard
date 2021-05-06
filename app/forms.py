@@ -16,7 +16,6 @@ class TeamForm(FlaskForm):
 
 class UploadResultForm(FlaskForm):
 
-    team_name = SelectField('Username', validators=[DataRequired()])
     file_libertyUS = FileField(validators=[FileRequired()])
     file_libertySpain = FileField(validators=[FileRequired()])
     submit = SubmitField('Submit')

@@ -20,10 +20,11 @@
     {% endwith %}
     <form action="" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.team_name.label }}<br>
-        {{ form.team_name(size=32) }}
-    </p>
+    <select name="team" id="team">
+        {% for team in teams %}
+            <option value="{{team}}">{{ team }}</option>
+        {% endfor %}
+    </select>
     <p>
         {{ form.file_libertyUS.label }}<br>
         {{ form.file_libertyUS(size=32) }}<br>

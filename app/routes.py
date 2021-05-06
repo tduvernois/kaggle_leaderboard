@@ -50,9 +50,9 @@ def allowed_file(filename):
 @app.route('/prediction', methods=['GET', 'POST'])
 def submit_prediction():
     form = UploadResultForm()
-    form.team_name.choices = [t.name for t in Team.query.all()]
-    if request.method == 'POST' and form.validate_on_submit():
-        team_name = form.team_name.data
+    teams = [t.name for t in Team.query.all()]
+    if request.method == 'POST' and request.form['team'] is not None and form.validate_on_submit():
+        team_name = request.form['team']
         team = Team.query.filter_by(name=team_name).first()
         if team is None:
             flash('The team does not exist')
@@ -77,7 +77,7 @@ def submit_prediction():
             else:
                 flash('The file is not a csv')
 
-    return render_template('submit_predictions.html', title='Submit predictions',
+    return render_template('submit_predictions.html', title='Submit predictions', teams=teams,
                            form=form)
 
 
