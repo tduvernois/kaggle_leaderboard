@@ -1,5 +1,23 @@
 {% block content %}
+
+<head>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='submit_predictions.css')}}">
+
+</head>
+<body>
+
     <h1>Submit predictions</h1>
+    <div id="loading"></div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
     <form action="" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
@@ -15,4 +33,9 @@
     </p>
     <p>{{ form.submit() }}</p>
     </form>
+
+    <script src="{{url_for('static', filename='submit_predictions.js')}}"></script>
+
+</body>
+
 {% endblock %}
