@@ -11,6 +11,7 @@ class Team(db.Model):
     def __repr__(self):
         return '<Team {}>'.format(self.name)
 
+
 class Member(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), index=True, unique=True)
@@ -24,7 +25,7 @@ class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), index=True, unique=True)
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    score = db.relationship("Score", useList=False, back_populates="prediction")
+    score = db.relationship("Score", uselist=False, back_populates="prediction")
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):

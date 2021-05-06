@@ -3,7 +3,10 @@ from wtforms import StringField, SelectField, SubmitField, FieldList, FormField,
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileRequired
 
+
+
 filenames = ['efz', 'fefezfefefz']
+
 
 class TeamForm(FlaskForm):
     team_name = StringField('Team name', validators=[DataRequired()])
@@ -13,7 +16,6 @@ class TeamForm(FlaskForm):
     team_member_4 = StringField('Team member', validators=[DataRequired()])
 
     submit = SubmitField('Create Team')
-
 
 
 class UploadResultForm(FlaskForm):

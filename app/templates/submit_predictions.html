@@ -5,6 +5,9 @@
         <p>
             {{ form.team_name.label }}<br>
             {{ form.team_name(size=32) }}
+            {% for error in form.team_name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.file.label }}<br>
