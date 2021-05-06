@@ -5,6 +5,9 @@ from flask import render_template, flash, redirect, url_for
 from app.models import Team, Member, Prediction
 from werkzeug.utils import secure_filename
 import os
+from flask import request
+import csv
+from app import predictions_corrections
 
 
 @app.route('/')
@@ -37,17 +40,33 @@ def register_team():
 @app.route('/prediction', methods=['GET', 'POST'])
 def submit_prediction():
     form = UploadResultForm()
-    print(form.file.data)
     if request.method == 'POST' and form.validate_on_submit():
-
         f = form.file.data
         filename = secure_filename(f.filename)
         team = form.team_name.data
         filename_saved = team + '-' + filename
-        f.save(os.path.join(
-            app.config['PREDICTION_RESULT_PATH'], filename_saved
-        ))
+        file_path = os.path.join( app.config['PREDICTION_RESULT_PATH'], filename_saved)
+        f.save(file_path)
         # Prediction(name=filename_saved)
+
+
+        predictions = {}
+        with open(file_path , mode='r') as csv_file:
+            csv_reader = csv.DictReader(csv_file, delimiter=';')
+            for row in csv_reader:
+                predictions[row['id']] = row['status']
+
+        counter_correct = 0
+        counter_wrong = 0
+        for key, val in predictions_corrections.items():
+            if predictions[key] == val:
+                counter_correct = counter_correct + 1
+            else:
+                counter_wrong = counter_wrong + 1
+
+        print(counter_correct)
+        print(counter_wrong)
+
         db.session.commit()
         return redirect(url_for('index'))
 

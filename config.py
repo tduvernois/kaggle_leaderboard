@@ -9,6 +9,7 @@ class Config(object):
                               'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PREDICTION_RESULT_PATH = '/Users/thomasduvernois/python/flask/hello_world/predictions'
+    PREDICTION_RESULT_SOLUTION_PATH = '/Users/thomasduvernois/python/flask/hello_world/predictions/solutions.csv'
 
 
 
