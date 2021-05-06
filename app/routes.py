@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask import request
 import csv
-from app import predictions_corrections
+from app import predictions_solution
 from datetime import datetime
 
 
@@ -50,6 +50,7 @@ def allowed_file(filename):
 @app.route('/prediction', methods=['GET', 'POST'])
 def submit_prediction():
     form = UploadResultForm()
+    form.team_name.choices = [t.name for t in Team.query.all()]
     if request.method == 'POST' and form.validate_on_submit():
         team_name = form.team_name.data
         team = Team.query.filter_by(name=team_name).first()
@@ -81,7 +82,7 @@ def submit_prediction():
 
 
 def create_file_name(file_name, team_name):
-    return f'{team_name}_{file_name}_{datetime.utcnow}'
+    return f'{team_name}_{file_name}_{datetime.utcnow()}'
 
 
 def file_handler(file, team_name):
@@ -97,8 +98,8 @@ def file_handler(file, team_name):
             predictions[row['id']] = row['status']
     counter_true_pred = 0
     counter_false_pred = 0
-    for key, val in predictions_corrections.items():
-        if predictions[key] == val:
+    for key, val in predictions_solution.items():
+        if key in predictions and predictions[key] == val:
             counter_true_pred = counter_true_pred + 1
         else:
             counter_false_pred = counter_false_pred + 1

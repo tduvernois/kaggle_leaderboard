@@ -23,12 +23,12 @@ class Member(db.Model):
 
 class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    file_name_LibertyUs = db.Column(db.String(200), index=True, unique=True)
-    file_name_LibertySpain = db.Column(db.String(200), index=True, unique=True)
-    score_LibertyUs = db.Column(db.Float(10), index=True, unique=True)
-    score_LibertySpain = db.Column(db.Float(10), index=True, unique=True)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), index=True)
+    file_name_LibertyUs = db.Column(db.String(200))
+    file_name_LibertySpain = db.Column(db.String(200))
+    score_LibertyUs = db.Column(db.Float(10))
+    score_LibertySpain = db.Column(db.Float(10))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Prediction {}>'.format(self.name)

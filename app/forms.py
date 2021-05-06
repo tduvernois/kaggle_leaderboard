@@ -4,10 +4,6 @@ from wtforms.validators import DataRequired
 from flask_wtf.file import FileRequired
 
 
-
-filenames = ['efz', 'fefezfefefz']
-
-
 class TeamForm(FlaskForm):
     team_name = StringField('Team name', validators=[DataRequired()])
     team_member_1 = StringField('Team member', validators=[DataRequired()])
@@ -19,8 +15,8 @@ class TeamForm(FlaskForm):
 
 
 class UploadResultForm(FlaskForm):
-    # team_name = SelectField('Username', validators=[DataRequired()], choices=filenames)
-    team_name = StringField('Team name', validators=[DataRequired()])
+
+    team_name = SelectField('Username', validators=[DataRequired()])
     file_libertyUS = FileField(validators=[FileRequired()])
     file_libertySpain = FileField(validators=[FileRequired()])
     submit = SubmitField('Submit')
