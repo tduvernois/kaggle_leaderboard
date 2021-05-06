@@ -73,7 +73,7 @@ def submit_prediction():
                 )
                 db.session.add(prediction)
                 db.session.commit()
-                return redirect(url_for('index'))
+                return redirect(url_for('leaderboard'))
             else:
                 flash('The file is not a csv')
 
@@ -104,3 +104,22 @@ def file_handler(file, team_name):
         else:
             counter_false_pred = counter_false_pred + 1
     return counter_false_pred, counter_true_pred
+
+
+@app.route('/leaderboard')
+def leaderboard():
+
+    teams = Team.query.all()
+    teams_with_best_prediction_and_best_score = {}
+    for team in teams:
+        best_team_prediction, best_team_score = team.get_team_best_prediction()
+        if best_team_prediction is not None:
+            teams_with_best_prediction_and_best_score[team.id] = { 'prediction': best_team_prediction,
+                                                               'score': best_team_score,
+                                                               'team': team}
+    teams_with_best_score_sorted = dict(sorted(teams_with_best_prediction_and_best_score.items(),
+                                               key=lambda item: item[1]['score'],
+                                               reverse=True))
+
+    return render_template('leaderboard.html', title='Leaderboard',
+                           teams_with_best_score_sorted=teams_with_best_score_sorted)

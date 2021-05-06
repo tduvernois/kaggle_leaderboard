@@ -1,0 +1,22 @@
+{% block content %}
+    <h1>Leaderboard</h1>
+
+    <table style="width:100%">
+        <tr>
+            <th>Team Name</th>
+            <th>Global score</th>
+            <th>Liberty US Score</th>
+            <th>Liberty Spain Score</th>
+        </tr>
+        {% for _, t in teams_with_best_score_sorted.items() %}
+             <tr>
+                <td style="text-align:center">{{ t.team.name }}</td>
+                <td style="text-align:center">{{ t.score }}</td>
+                <td style="text-align:center">{{ t.prediction.score_LibertyUs }}</td>
+                <td style="text-align:center">{{ t.prediction.score_LibertySpain }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+{% endblock %}

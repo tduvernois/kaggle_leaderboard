@@ -11,6 +11,17 @@ class Team(db.Model):
     def __repr__(self):
         return '<Team {}>'.format(self.name)
 
+    def get_team_best_prediction(self):
+        predictions = self.predictions
+        best_score = 0
+        best_prediction = None
+        for prediction in predictions:
+            score = prediction.score_LibertySpain + prediction.score_LibertyUs
+            if score > best_score:
+                best_score = score
+                best_prediction = prediction
+        return best_prediction, best_score
+
 
 class Member(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,3 +43,4 @@ class Prediction(db.Model):
 
     def __repr__(self):
         return '<Prediction {}>'.format(self.name)
+
