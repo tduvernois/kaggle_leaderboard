@@ -3,31 +3,40 @@
 {% block content %}
 <body>
 
+    <h1 style="margin-bottom:30px">Teams</h1>
+
+    <div class="ui form">
+          <div class="field" style="width: 25%;">
+            <select name="team" id="team" class="ui search dropdown" onChange="getTeamSubmissions(this)">
+                  <option value="" selected disabled hidden>Select team</option>
+                {% for team in teams %}
+                    <option value="{{team}}">{{ team }}</option>
+                {% endfor %}
+                </select>
+          </div>
+        </div>
+    <div id="best_score">
+        <p hidden></p>
+    </div>
 
 
-    <h1>Teams</h1>
-
-    <select name="team" id="team" onChange="getTeamSubmissions(this)">
-        {% for team in teams %}
-            <option value="{{team}}">{{ team }}</option>
-        {% endfor %}
-    </select>
-
-    <p>Last submission by {{ last_prediction_team_name }} at {{ last_prediction_timestamp }}</p>
-
-    <table style="width:100%">
-        <tbody id="table_submissions">
-        <tr>
-            <th style="text-align:center">Submission Time</th>
-            <th style="text-align:center">Liberty US Score</th>
-            <th style="text-align:center">Liberty Spain Score</th>
-            <th style="text-align:center">Global Score</th>
-        </tr>
-        </tbody>
+</div>
+    <table style="width:100%;margin-top:30px;margin-left:5%" id="table_submissions" class="ui single line table">
+        <thead>
+            <tr>
+                <th style="text-align:center">Submission Time</th>
+                <th style="text-align:center">Liberty US Score</th>
+                <th style="text-align:center">Liberty Spain Score</th>
+                <th style="text-align:center">Global Score</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
     </table>
 
     <script  src="{{url_for('static', filename='teams.js')}}"></script>
-
+    <script>
+      $("select.dropdown").dropdown();
+    </script>
 </body>
 
 {% endblock %}

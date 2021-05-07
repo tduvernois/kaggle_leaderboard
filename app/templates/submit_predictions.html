@@ -8,40 +8,50 @@
 </head>
 <body>
 
-    <h1>Submit predictions</h1>
-    <div id="loading"></div>
+    <h1 style="margin-bottom:30px;">Submit predictions</h1>
     {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     {% endwith %}
     <form action="" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-    <select name="team" id="team">
-        {% for team in teams %}
-            <option value="{{team}}">{{ team }}</option>
-        {% endfor %}
-    </select>
-    <p>
+
+        <div class="ui form" style="width:25%;">
+          <div class="field">
+            <select name="team" id="team" class="ui search dropdown">
+                <option value="" selected disabled hidden>Select team</option>
+                {% for team in teams %}
+                    <option value="{{team}}">{{ team }}</option>
+                {% endfor %}
+                </select>
+          </div>
+        </div>
+    <p style="margin-top: 20px;">
         {{ form.file_libertyUS.label }}<br>
         {{ form.file_libertyUS(size=32) }}<br>
         {% for error in form.file_libertyUS.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
-    <p>
+    <p style="margin-top:30px;margin-bottom:30px;">
         {{ form.file_libertySpain.label }}<br>
         {{ form.file_libertySpain(size=32) }}<br>
         {% for error in form.file_libertySpain.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
-    <p>{{ form.submit() }}</p>
+       <button id="submit" name="submit" type="submit" class="ui button">
+            Submit
+        </button>
     </form>
+    <script>
+      $("select.dropdown").dropdown();
+    </script>
 
 
 </body>

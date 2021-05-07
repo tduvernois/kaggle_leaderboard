@@ -1,29 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Register Team</h1>
-    <form action="" method="post" novalidate>
+<div style="width:655px;margin:auto;">
+    <h1 style="text-align:center;">Register Team</h1>
+    <form action="" method="post" class="ui form" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.team_name.label }}<br>
-            {{ form.team_name(size=32) }}
-        </p>
-        <p>
-            {{ form.team_member_1.label }}<br>
-            {{ form.team_member_1(size=32) }}
-        </p>
-        <p>
-            {{ form.team_member_2.label }}<br>
-            {{ form.team_member_2(size=32) }}
-        </p>
-        <p>
-            {{ form.team_member_3.label }}<br>
-            {{ form.team_member_3(size=32) }}
-        </p>
-        <p>
-            {{ form.team_member_4.label }}<br>
-            {{ form.team_member_4(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
+      <div class="field">
+        <label>{{ form.team_name.label }}</label>
+          {{ form.team_name(size=32) }}
+      </div>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div style="color:red;margin-bottom:15px;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <div class="field">
+        <label>{{ form.team_member_1.label }}</label>
+          {{ form.team_member_1(size=32) }}
+      </div>
+      <div class="field">
+        <label>{{ form.team_member_2.label }}</label>
+          {{ form.team_member_2(size=32) }}
+      </div>
+      <div class="field">
+        <label>{{ form.team_member_3.label }}</label>
+          {{ form.team_member_3(size=32) }}
+      </div>
+      <div class="field">
+        <label>{{ form.team_member_4.label }}</label>
+          {{ form.team_member_4(size=32) }}
+      </div>
+
+        <button id="submit" name="submit" type="submit" class="ui button">
+            Submit
+        </button>
     </form>
+
+
+</div>
+
 {% endblock %}

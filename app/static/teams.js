@@ -4,32 +4,33 @@ function getTeamSubmissions(name){
     $.get('/team_submissions/' + team_name, null)
         .done(function(response) {
             cleanTable()
-            updateTable(response)
+            updateTable(response, team_name)
         }).fail(function() {
             console.log("error")
         });
 
 }
 
-function updateTable(submissions){
+function updateTable(submissions, team_name){
 
     var parent = $('#table_submissions')[0]
-    var tr = document.createElement("tr");
-    parent.append(tr);
+    var thead = document.createElement("thead");
+    parent.append(thead);
 
-    var domString = `<tr> \
+    var domString = `<thead><tr> \
             <th style="text-align:center">Submission Time</th> \
             <th style="text-align:center">Liberty US Score</th> \
             <th style="text-align:center">Liberty Spain Score</th> \
             <th style="text-align:center">Global Score</th> \
-        </tr>`
-    tr.outerHTML = domString;
+        </tr></thead><tbody id="table-body"></tbody>`
+    thead.outerHTML = domString;
 
 
     console.log(submissions.length)
     for (let i = 0; i < submissions.length; i++) {
         var tr = document.createElement("tr");
         // preprend before
+        parent = $('#table-body')[0]
         parent.append(tr);
         let timestamp = submissions[i].timestamp
         let score_libertyUs = submissions[i].score_libertyUs
@@ -42,9 +43,32 @@ function updateTable(submissions){
         <td style="text-align:center">${score_global}</td>`
         tr.outerHTML =  domString;
     }
+
+    var best_score = updateBestScore(submissions)
+
+    // update dom best score element
+    parent = $('#best_score')[0]
+    var domString = `<p style="margin-top: 20px;">${team_name} best score: ${best_score}</p>`
+//    var domString = `<div class="ui statistic" style="margin-top: 20px;"><div class="value">${best_score}</div><div class="label">Best score</div>`
+    parent.innerHTML =  domString;
+
+
+
+
 }
 
 function cleanTable(){
     $('#table_submissions')[0].innerHTML = ''
 }
 
+function updateBestScore(submissions){
+
+    var best_score = 0
+    for (let i = 0; i < submissions.length; i++) {
+        var global_score = submissions[i].score_libertyUs + submissions[i].score_LibertySpain
+        if(global_score > best_score){
+            best_score = global_score
+        }
+    }
+    return best_score
+}

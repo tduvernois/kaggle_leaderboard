@@ -1,26 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Leaderboard</h1>
+    <h1 style="margin-bottom:30px">Leaderboard</h1>
 
 
-    <p>Last submission by {{ last_prediction_team_name }} at {{ last_prediction_timestamp }}</p>
+    <p style="margin-bottom:30px">Last submission by {{ last_prediction_team_name }} at {{ last_prediction_timestamp }}</p>
 
-    <table style="width:100%">
-        <tr>
-            <th>Team Name</th>
-            <th>Global score</th>
-            <th>Liberty US Score</th>
-            <th>Liberty Spain Score</th>
-        </tr>
+    <table style="width:100%" class="ui single line table">
+        <thead>
+            <tr>
+                <th style="text-align:center">Rank</th>
+                <th style="text-align:center">Team Name</th>
+                <th style="text-align:center">Global score</th>
+                <th style="text-align:center">Liberty US Score</th>
+                <th style="text-align:center">Liberty Spain Score</th>
+            </tr>
+        <thead>
+        <tbody>
         {% for _, t in teams_with_best_score_sorted.items() %}
+            {{ counter.increment() }}
              <tr>
+                <td style="text-align:center">{{ counter.count }}</td>
                 <td style="text-align:center">{{ t.team.name }}</td>
                 <td style="text-align:center">{{ t.score }}</td>
                 <td style="text-align:center">{{ t.prediction.score_LibertyUs }}</td>
                 <td style="text-align:center">{{ t.prediction.score_LibertySpain }}</td>
             </tr>
         {% endfor %}
+        <tbody>
 
     </table>
 

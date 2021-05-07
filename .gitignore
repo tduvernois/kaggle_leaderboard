@@ -142,3 +142,5 @@ cython_debug/
 migrations
 predictions
 app.db
+test.html
+notes

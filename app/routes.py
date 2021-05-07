@@ -9,12 +9,12 @@ import csv
 from app import predictions_solution
 from datetime import datetime
 from flask import jsonify
-
+from app.counter import Counter
 
 @app.route('/')
-@app.route('/index')
-def index():
-    return "Hello, World!"
+@app.route('/overview')
+def overview():
+    return render_template('Overview.html', title='Overview')
 
 
 @app.route('/register_team', methods=['GET', 'POST'])
@@ -23,7 +23,7 @@ def register_team():
     if form.validate_on_submit():
         team = Team.query.filter_by(name=form.team_name.data).first()
         if team is not None:
-            print('This team already exists')
+            flash('This team already exists')
             return redirect(url_for('register_team'))
 
         members = [Member(name=form.team_member_1.data)]
@@ -37,7 +37,7 @@ def register_team():
         team = Team(name=form.team_name.data, members=members)
         db.session.add(team)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('overview'))
     return render_template('register_team.html', title='Sign In', form=form)
 
 
@@ -52,6 +52,7 @@ def allowed_file(filename):
 def submit_prediction():
     form = UploadResultForm()
     teams = [t.name for t in Team.query.all()]
+    print(form.data)
     if request.method == 'POST' and request.form['team'] is not None and form.validate_on_submit():
         team_name = request.form['team']
         team = Team.query.filter_by(name=team_name).first()
@@ -128,7 +129,8 @@ def leaderboard():
     return render_template('leaderboard.html', title='Leaderboard',
                            teams_with_best_score_sorted=teams_with_best_score_sorted,
                            last_prediction_team_name=last_prediction_team_name,
-                           last_prediction_timestamp=last_prediction_timestamp)
+                           last_prediction_timestamp=last_prediction_timestamp,
+                           counter=Counter())
 
 
 @app.route('/teams')
