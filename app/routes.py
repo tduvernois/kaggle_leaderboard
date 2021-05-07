@@ -1,13 +1,14 @@
 from app import app, db
 from app.forms import TeamForm, UploadResultForm
 from flask import render_template, flash, redirect, url_for
-from app.models import Team, Member, Prediction
+from app.models import Team, Member, Prediction, get_last_prediction
 from werkzeug.utils import secure_filename
 import os
 from flask import request
 import csv
 from app import predictions_solution
 from datetime import datetime
+from flask import jsonify
 
 
 @app.route('/')
@@ -108,18 +109,49 @@ def file_handler(file, team_name):
 
 @app.route('/leaderboard')
 def leaderboard():
-
     teams = Team.query.all()
     teams_with_best_prediction_and_best_score = {}
     for team in teams:
         best_team_prediction, best_team_score = team.get_team_best_prediction()
         if best_team_prediction is not None:
-            teams_with_best_prediction_and_best_score[team.id] = { 'prediction': best_team_prediction,
-                                                               'score': best_team_score,
-                                                               'team': team}
+            teams_with_best_prediction_and_best_score[team.id] = {'prediction': best_team_prediction,
+                                                                  'score': best_team_score,
+                                                                  'team': team}
     teams_with_best_score_sorted = dict(sorted(teams_with_best_prediction_and_best_score.items(),
                                                key=lambda item: item[1]['score'],
                                                reverse=True))
 
+    last_prediction = get_last_prediction()
+    last_prediction_team_name = last_prediction[0].team.name
+    last_prediction_timestamp = last_prediction[0].timestamp
+
     return render_template('leaderboard.html', title='Leaderboard',
-                           teams_with_best_score_sorted=teams_with_best_score_sorted)
+                           teams_with_best_score_sorted=teams_with_best_score_sorted,
+                           last_prediction_team_name=last_prediction_team_name,
+                           last_prediction_timestamp=last_prediction_timestamp)
+
+
+@app.route('/teams')
+def teams():
+    teams = [t.name for t in Team.query.all()]
+    team_submissions = {}
+    return render_template('teams.html', title='Teams', teams=teams, team_submissions=team_submissions)
+
+
+@app.route('/team_submissions/<name>')
+def team_submissions(name):
+    team = Team.query.filter_by(name=name).first()
+    submissions = team.get_team_submissions_all()
+
+    submissions_json = []
+    for s in submissions:
+        s_json = {'score_libertyUs': s.score_LibertyUs,
+               'score_LibertySpain': s.score_LibertySpain,
+               'timestamp': s.timestamp
+               }
+        submissions_json.append(s_json)
+    return jsonify(submissions_json)
+
+
+
+    return jsonify({'submissions': submissions})

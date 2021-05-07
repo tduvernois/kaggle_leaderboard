@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body>
+
+
+
+    <h1>Teams</h1>
+
+    <select name="team" id="team" onChange="getTeamSubmissions(this)">
+        {% for team in teams %}
+            <option value="{{team}}">{{ team }}</option>
+        {% endfor %}
+    </select>
+
+    <p>Last submission by {{ last_prediction_team_name }} at {{ last_prediction_timestamp }}</p>
+
+    <table style="width:100%">
+        <tbody id="table_submissions">
+        <tr>
+            <th style="text-align:center">Submission Time</th>
+            <th style="text-align:center">Liberty US Score</th>
+            <th style="text-align:center">Liberty Spain Score</th>
+            <th style="text-align:center">Global Score</th>
+        </tr>
+        </tbody>
+    </table>
+
+    <script  src="{{url_for('static', filename='teams.js')}}"></script>
+
+</body>
+
+{% endblock %}

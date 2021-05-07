@@ -22,6 +22,9 @@ class Team(db.Model):
                 best_prediction = prediction
         return best_prediction, best_score
 
+    def get_team_submissions_all(self):
+        return self.predictions
+
 
 class Member(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,6 +35,7 @@ class Member(db.Model):
         return '<Member {}>'.format(self.name)
 
 
+# TODO: rename to submission
 class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), index=True)
@@ -44,3 +48,8 @@ class Prediction(db.Model):
     def __repr__(self):
         return '<Prediction {}>'.format(self.name)
 
+
+def get_last_prediction():
+    return Prediction.query.join(Team, Team.id == Prediction.team_id) \
+        .order_by(Prediction.timestamp.desc()) \
+        .limit(1).all()
