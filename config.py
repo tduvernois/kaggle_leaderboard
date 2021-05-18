@@ -8,8 +8,11 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
                               'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    PREDICTION_RESULT_PATH = '/Users/thomasduvernois/python/flask/hello_world/predictions'
-    PREDICTION_RESULT_SOLUTION_PATH = '/Users/thomasduvernois/python/flask/hello_world/predictions/solutions_big.csv'
+    PREDICTION_RESULT_PATH = os.environ.get('APP_PATH') or '/Users/thomasduvernois/python/flask/hello_world/predictions'
+    if os.environ.get('APP_PATH') is not None:
+        PREDICTION_RESULT_SOLUTION_PATH = os.path.join(os.environ.get('APP_PATH'), 'solutions.csv')
+    else:
+        PREDICTION_RESULT_SOLUTION_PATH = '/Users/thomasduvernois/python/flask/hello_world/predictions/solutions_big.csv'
 
 
 
