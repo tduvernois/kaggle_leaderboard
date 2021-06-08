@@ -59,25 +59,28 @@ def submit_prediction():
         if team is None:
             flash('The team does not exist')
         else:
-            file_libertyUS = form.file_libertyUS.data
-            file_libertySpain = form.file_libertySpain.data
-            if allowed_file(file_libertyUS.filename) and allowed_file(file_libertySpain.filename):
-                libertyUS_false_pred, libertyUS_true_pred = file_handler(file_libertyUS, team_name)
-                libertySpain_false_pred, libertySpain_true_pred = file_handler(file_libertySpain, team_name)
-                score_LibertyUs = libertyUS_true_pred / (libertyUS_true_pred + libertyUS_false_pred)
-                score_LibertySpain = libertySpain_true_pred / (libertySpain_true_pred + libertySpain_false_pred)
-                prediction = Prediction(
-                    team_id=team.id,
-                    file_name_LibertyUs=file_libertyUS.filename,
-                    file_name_LibertySpain=file_libertySpain.filename,
-                    score_LibertyUs=score_LibertyUs,
-                    score_LibertySpain=score_LibertySpain
-                )
-                db.session.add(prediction)
-                db.session.commit()
-                return redirect(url_for('leaderboard'))
+            if team.number_of_submissions_last_24hours() >= app.config['MAX_TEAM_SUBMISSIONS_PER_DAY']:
+                flash('Max number of submissions in the past 24 hours hit')
             else:
-                flash('The file is not a csv')
+                file_libertyUS = form.file_libertyUS.data
+                file_libertySpain = form.file_libertySpain.data
+                if allowed_file(file_libertyUS.filename) and allowed_file(file_libertySpain.filename):
+                    libertyUS_false_pred, libertyUS_true_pred = file_handler(file_libertyUS, team_name)
+                    libertySpain_false_pred, libertySpain_true_pred = file_handler(file_libertySpain, team_name)
+                    score_LibertyUs = libertyUS_true_pred / (libertyUS_true_pred + libertyUS_false_pred)
+                    score_LibertySpain = libertySpain_true_pred / (libertySpain_true_pred + libertySpain_false_pred)
+                    prediction = Prediction(
+                        team_id=team.id,
+                        file_name_LibertyUs=file_libertyUS.filename,
+                        file_name_LibertySpain=file_libertySpain.filename,
+                        score_LibertyUs=score_LibertyUs,
+                        score_LibertySpain=score_LibertySpain
+                    )
+                    db.session.add(prediction)
+                    db.session.commit()
+                    return redirect(url_for('leaderboard'))
+                else:
+                    flash('The file is not a csv')
 
     return render_template('submit_predictions.html', title='Submit predictions', teams=teams,
                            form=form)
@@ -124,7 +127,7 @@ def leaderboard():
 
     last_prediction = get_last_prediction()
     last_prediction_team_name = last_prediction[0].team.name
-    last_prediction_timestamp = last_prediction[0].timestamp
+    last_prediction_timestamp = last_prediction[0].timestamp.strftime("%Y-%m-%d %H:%M")
 
     return render_template('leaderboard.html', title='Leaderboard',
                            teams_with_best_score_sorted=teams_with_best_score_sorted,

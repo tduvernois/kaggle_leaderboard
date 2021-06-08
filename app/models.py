@@ -1,5 +1,5 @@
 from app import db
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Team(db.Model):
@@ -24,6 +24,17 @@ class Team(db.Model):
 
     def get_team_submissions_all(self):
         return self.predictions
+
+    def number_of_submissions_last_24hours(self):
+        predictions = self.predictions
+        count = 0
+        past = datetime.now() - timedelta(days=1)
+        for p in predictions:
+            if p.timestamp > past:
+                count = count + 1
+        return count
+
+
 
 
 class Member(db.Model):
