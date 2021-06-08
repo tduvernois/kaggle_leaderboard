@@ -6,10 +6,14 @@ from werkzeug.utils import secure_filename
 import os
 from flask import request
 import csv
-from app import predictions_solution
+from app import get_scores_from_file, scores_solution
 from datetime import datetime
 from flask import jsonify
 from app.counter import Counter
+import numpy as np
+from sklearn.metrics import average_precision_score
+from numpy import genfromtxt
+
 
 @app.route('/')
 @app.route('/overview')
@@ -65,10 +69,8 @@ def submit_prediction():
                 file_libertyUS = form.file_libertyUS.data
                 file_libertySpain = form.file_libertySpain.data
                 if allowed_file(file_libertyUS.filename) and allowed_file(file_libertySpain.filename):
-                    libertyUS_false_pred, libertyUS_true_pred = file_handler(file_libertyUS, team_name)
-                    libertySpain_false_pred, libertySpain_true_pred = file_handler(file_libertySpain, team_name)
-                    score_LibertyUs = libertyUS_true_pred / (libertyUS_true_pred + libertyUS_false_pred)
-                    score_LibertySpain = libertySpain_true_pred / (libertySpain_true_pred + libertySpain_false_pred)
+                    score_LibertyUs = get_avg_precision_score_from_file(file_libertyUS, team_name)
+                    score_LibertySpain = get_avg_precision_score_from_file(file_libertySpain, team_name)
                     prediction = Prediction(
                         team_id=team.id,
                         file_name_LibertyUs=file_libertyUS.filename,
@@ -90,25 +92,17 @@ def create_file_name(file_name, team_name):
     return f'{team_name}_{file_name}_{datetime.utcnow()}'
 
 
-def file_handler(file, team_name):
+def get_avg_precision_score_from_file(file, team_name):
     filename_to_secure = create_file_name(file.filename, team_name)
     filename = secure_filename(filename_to_secure)
     # TODO: add arg to compare with client's dataset
     file_path = os.path.join(app.config['PREDICTION_RESULT_PATH'], filename)
     file.save(file_path)
-    predictions = {}
-    with open(file_path, mode='r') as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=';')
-        for row in csv_reader:
-            predictions[row['id']] = row['status']
-    counter_true_pred = 0
-    counter_false_pred = 0
-    for key, val in predictions_solution.items():
-        if key in predictions and predictions[key] == val:
-            counter_true_pred = counter_true_pred + 1
-        else:
-            counter_false_pred = counter_false_pred + 1
-    return counter_false_pred, counter_true_pred
+
+    scores = get_scores_from_file(file_path)
+
+    score = average_precision_score(scores_solution, scores)
+    return score
 
 
 @app.route('/leaderboard')

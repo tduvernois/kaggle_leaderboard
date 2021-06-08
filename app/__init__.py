@@ -2,19 +2,19 @@ from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import csv
-
+from numpy import genfromtxt
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
-predictions_solution = {}
-with open(app.config['PREDICTION_RESULT_SOLUTION_PATH'], mode='r') as csv_file:
-    csv_reader = csv.DictReader(csv_file,  delimiter=';')
-    for row in csv_reader:
-        predictions_solution[row['id']] = row['status']
+
+def get_scores_from_file(file_path):
+    scores = genfromtxt(file_path)
+    return scores
+
+
+scores_solution = get_scores_from_file(app.config['PREDICTION_RESULT_SOLUTION_PATH'])
 
 from app import routes, models
-
