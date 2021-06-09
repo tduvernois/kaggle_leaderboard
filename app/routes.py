@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask import request
 import csv
-from app import get_scores_from_file, scores_solution
+from app import get_scores_from_file, scores_solution_Spain, scores_solution_US
 from datetime import datetime
 from flask import jsonify
 from app.counter import Counter
@@ -69,7 +69,7 @@ def submit_prediction():
                 file_libertyUS = form.file_libertyUS.data
                 file_libertySpain = form.file_libertySpain.data
                 if allowed_file(file_libertyUS.filename) and allowed_file(file_libertySpain.filename):
-                    score_LibertyUs = get_avg_precision_score_from_file(file_libertyUS, team_name)
+                    score_LibertyUs = get_avg_precision_score_from_file(file_libertyUS, team_name, True)
                     score_LibertySpain = get_avg_precision_score_from_file(file_libertySpain, team_name)
                     prediction = Prediction(
                         team_id=team.id,
@@ -92,16 +92,24 @@ def create_file_name(file_name, team_name):
     return f'{team_name}_{file_name}_{datetime.utcnow()}'
 
 
-def get_avg_precision_score_from_file(file, team_name):
+def save_file_and_return_path(file, team_name):
     filename_to_secure = create_file_name(file.filename, team_name)
     filename = secure_filename(filename_to_secure)
     # TODO: add arg to compare with client's dataset
     file_path = os.path.join(app.config['PREDICTION_RESULT_PATH'], filename)
     file.save(file_path)
+    return file_path
+
+
+def get_avg_precision_score_from_file(file, team_name, is_us_dataset=False):
+    file_path = save_file_and_return_path(file, team_name)
 
     scores = get_scores_from_file(file_path)
 
-    score = average_precision_score(scores_solution, scores)
+    if is_us_dataset:
+        score = average_precision_score(scores_solution_US, scores)
+    else:
+        score = average_precision_score(scores_solution_Spain, scores)
     return score
 
 
@@ -145,12 +153,10 @@ def team_submissions(name):
     submissions_json = []
     for s in submissions:
         s_json = {'score_libertyUs': s.score_LibertyUs,
-               'score_LibertySpain': s.score_LibertySpain,
-               'timestamp': s.timestamp
-               }
+                  'score_LibertySpain': s.score_LibertySpain,
+                  'timestamp': s.timestamp
+                  }
         submissions_json.append(s_json)
     return jsonify(submissions_json)
-
-
 
     return jsonify({'submissions': submissions})

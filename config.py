@@ -13,7 +13,9 @@ class Config(object):
     if os.environ.get('APP_PATH') is not None:
         PREDICTION_RESULT_SOLUTION_PATH = os.path.join(os.environ.get('APP_PATH'), 'solutions.csv')
     else:
-        PREDICTION_RESULT_SOLUTION_PATH = '/Users/thomasduvernois/python/flask/hello_world/predictions/sol.csv'
+        PREDICTION_RESULT_SOLUTION_PATH_US = '/Users/thomasduvernois/python/flask/hello_world/predictions/sol.csv'
+        PREDICTION_RESULT_SOLUTION_PATH_SPAIN = '/Users/thomasduvernois/python/flask/hello_world/predictions/sol.csv'
+
 
 
 

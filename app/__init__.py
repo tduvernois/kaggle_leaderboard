@@ -15,6 +15,7 @@ def get_scores_from_file(file_path):
     return scores
 
 
-scores_solution = get_scores_from_file(app.config['PREDICTION_RESULT_SOLUTION_PATH'])
+scores_solution_US = get_scores_from_file(app.config['PREDICTION_RESULT_SOLUTION_PATH_US'])
+scores_solution_Spain = get_scores_from_file(app.config['PREDICTION_RESULT_SOLUTION_PATH_SPAIN'])
 
 from app import routes, models
