@@ -38,9 +38,9 @@ function updateTable(submissions, team_name){
         let score_global = score_libertyUs + score_libertySpain
 
         var domString = `<td style="text-align:center">${timestamp}</td> \
-        <td style="text-align:center">${score_libertyUs}</td> \
-        <td style="text-align:center">${score_libertySpain}</td> \
-        <td style="text-align:center">${score_global}</td>`
+        <td style="text-align:center">${score_libertyUs.toFixed(3)}</td> \
+        <td style="text-align:center">${score_libertySpain.toFixed(3)}</td> \
+        <td style="text-align:center">${score_global.toFixed(3)}</td>`
         tr.outerHTML =  domString;
     }
 
@@ -48,7 +48,7 @@ function updateTable(submissions, team_name){
 
     // update dom best score element
     parent = $('#best_score')[0]
-    var domString = `<p style="margin-top: 20px;">${team_name} best score: ${best_score}</p>`
+    var domString = `<p style="margin-top: 20px;">${team_name} best score: ${best_score.toFixed(3)}</p>`
 //    var domString = `<div class="ui statistic" style="margin-top: 20px;"><div class="value">${best_score}</div><div class="label">Best score</div>`
     parent.innerHTML =  domString;
 

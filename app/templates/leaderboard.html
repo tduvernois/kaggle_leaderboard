@@ -22,13 +22,12 @@
              <tr>
                 <td style="text-align:center">{{ counter.count }}</td>
                 <td style="text-align:center">{{ t.team.name }}</td>
-                <td style="text-align:center">{{ t.score }}</td>
-                <td style="text-align:center">{{ t.prediction.score_LibertyUs }}</td>
-                <td style="text-align:center">{{ t.prediction.score_LibertySpain }}</td>
+                <td style="text-align:center">{{'%0.3f'|format(t.score|float)}}</td>
+                <td style="text-align:center">{{'%0.3f'|format(t.prediction.score_LibertyUs|float)}}</td>
+                <td style="text-align:center">{{'%0.3f'|format(t.prediction.score_LibertySpain|float)}}</td>
             </tr>
         {% endfor %}
         <tbody>
-
     </table>
 
 {% endblock %}
