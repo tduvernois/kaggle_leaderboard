@@ -69,18 +69,21 @@ def submit_prediction():
                 file_libertyUS = form.file_libertyUS.data
                 file_libertySpain = form.file_libertySpain.data
                 if allowed_file(file_libertyUS.filename) and allowed_file(file_libertySpain.filename):
-                    score_LibertyUs = get_avg_precision_score_from_file(file_libertyUS, team_name, True)
-                    score_LibertySpain = get_avg_precision_score_from_file(file_libertySpain, team_name)
-                    prediction = Prediction(
-                        team_id=team.id,
-                        file_name_LibertyUs=file_libertyUS.filename,
-                        file_name_LibertySpain=file_libertySpain.filename,
-                        score_LibertyUs=score_LibertyUs,
-                        score_LibertySpain=score_LibertySpain
-                    )
-                    db.session.add(prediction)
-                    db.session.commit()
-                    return redirect(url_for('leaderboard'))
+                    try:
+                        score_LibertyUs = get_avg_precision_score_from_file(file_libertyUS, team_name, True)
+                        score_LibertySpain = get_avg_precision_score_from_file(file_libertySpain, team_name)
+                        prediction = Prediction(
+                            team_id=team.id,
+                            file_name_LibertyUs=file_libertyUS.filename,
+                            file_name_LibertySpain=file_libertySpain.filename,
+                            score_LibertyUs=score_LibertyUs,
+                            score_LibertySpain=score_LibertySpain
+                        )
+                        db.session.add(prediction)
+                        db.session.commit()
+                        return redirect(url_for('leaderboard'))
+                    except Exception as e:
+                        flash(str(e))
                 else:
                     flash('The file is not a csv')
 
