@@ -4,28 +4,72 @@
 
   <h1>Overview</h1>
 
-  <div>Internal kaggle competition to improve the scoring models used to predict a score to each Force alert.
-  There are two datasets from two existing clients: Liberty US and Liberty Spain
-  </div>
-  <div>To submit a result, you need to follow the below steps in the order:</div>
-  <ul>
-    <li>Create team</li>
-    <li>Download datasets</li>
-    <li>Upload predictions</li>
-    <li>Access to leaderboard</li>
-  </ul>
-  <p></p>
-  <div>The submitted files need to have a specific format as below:</div>
-  <div class="ui segment" style="padding-bottom:0px;">
-  <pre>
-    <code>
-      id;status
-      1;0
-      2;1
-      3;1
-      4;0
-    </code>
-  </pre>
-</div>
+   <h3>Goal</h3>
+        <div>Improve our current scoring system by building a supervised model for fraud detection (binary classification) on top of our existing scenarios. Then implement this solution in production.</div>
+        <h3>Prize</h3>
+        <div>Drinks / restaurant / fun activity for the winning team.</div>
+        <h3>Key dates</h3>
+        <ul>
+            <li><b>Monday 14/06/2021 -</b> Start of the competition</li>
+            <li><b>Thursday 17/06/2021 -</b> Pizza Kaggle at Paris Office</li>
+            <li><b>Sunday 27/06/2021 -</b> End of the competition</li>
+        </ul>
+        <h3>Datasets</h3>
+        <div style="margin-bottom:15px">We extracted two motor datasets with all variable definitions used for detection, with some categorical features such as MotorClaimCause, InvolvedCovers or FpVehicleType</div>
+        <div><b>1st Dataset :</b> Liberty US</div>
+        <ul style="margin-top:5px">
+            <li>1.2M lines</li>
+            <li>8k frauds</li>
+            <li>229 features</li>
+        </ul>
+        <div><b>2st Dataset :</b> Liberty Spain</div>
+        <ul style="margin-top:5px">
+            <li>1.3M lines</li>
+            <li>19k frauds</li>
+            <li>317 features</li>
+        </ul>
+        <div>The training and test datasets are available on our internal <a href="https://drive.google.com/drive/folders/1evPwRx_Om-NxGYgbZUKnbjZfSCEmSCbG?usp=sharing">Google drive</a>.</div>
+        <h3>Instructions</h3>
+        <b>Model</b>
+        <ul style="margin-top:5px">
+            <li>Your prediction must be a continuous score between 0 and 1</li>
+            <li>Use any model you like, as long as it is in Python or C#</li>
+        </ul>
+        <b>Teams</b>
+        <ul style="margin-top:5px">
+            <li>You can register you team in the <a href="http://sh-kaggle.azurewebsites.net/register_team">team section</a> (No credentials are needed, so please submit under your team name)</li>
+            <li>4 people maximum per team</li>
+        </ul>
+        <b>Submissions</b>
+        <ul style="margin-top:5px">
+            <li>5 submissions max per day per dataset</li>
+            <li>        You submission file must be a csv with all you predictions without any index or header. You must have :
+                <ul>
+                    <li>237085 lines for liberty us</li>
+                    <li>252687 lines for liberty spain</li>
+                </ul>
+            </li>
+            <li>The request to submit a prediction is taking a few seconds.</li>
+        </ul>
+
+        <b>Leaderboard Score</b>
+        <ul style="margin-top:5px">
+            <li>Your score will be computed on test sets which include 20% of the original dataset. The training and test datasets keep the same class distribution</li>
+            <li>The score is the average precision metric (area under the precision/recall curve, see <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html">scikit-learn documentation</a>, which is good at assessing performances for very imbalanced datasets)</li>
+            <li>You have the possibility to submit only a single file in case you only want to get the score of one client test dataset.</li>
+            <li>Since there are two datasets, the global score will be computed as the sum of you two scores. You’ll need to submit predictions for both datasets to win the competition.</li>
+        </ul>
+
+
+        <b>Questions</b>
+        <div style="margin-top:5px">You can ask any questions in the google chat room "Kaggle Competition", or directly contact Thomas Duvernois or Maxime Benoit.</div>
+
+        <h3>Hints</h3>
+        <div style="margin-bottom: 10px"><b>These are extremely imbalanced datasets : </b>you must use techniques such as : oversampling, undersampling, or model weighting (or multiple at once) to tackle this issue</div>
+        <div style="margin-bottom: 10px"><b>Don’t forget to scale features or drop high correlated features </b>when using certain ML algorithms in order to converge (actually all algorithms except tree-based ones).</div>
+        <div style="margin-bottom: 10px"><b>Datasets are around 300 features wide :</b>To overcome the issue of the curse of dimensionality, you’ll need to use feature selection (variable importance) or feature reduction techniques (PCA, AutoEncoders)</div>
+        <div style="margin-bottom: 10px"><b>Be careful with null values : </b>Features are computed with our current variable definitions implementation, and some variables may be poorly coded concerning null values (for example : a boolean variable which is =1 when true and =null when false). Fill or drop them wisely.</div>
+        <div style="margin-bottom: 10px; padding-bottom:100px"><b>There can be multiple fraud patterns : </b>You can build several models trained on sub-datasets (depending on some features such as : claim cause, involved covers... or whatever feature you want).</div>
+
 
 {% endblock %}
